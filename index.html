@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نمایشگاه هنری آفرینش</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    /* CSS Variables & Theme Setup */
+    :root {
+      --bg: #f7fbf4;
+      --card: #ffffff;
+      
+      --matcha: #7a9e7e;
+      --sage: #a8c3a0;
+      --cream: #fffdf8;
+      --rose: #ecd7cf;
+      --gold: #d4a373;
+      
+      --text: #344234;
+      --text-light: #5f6f5f;
+      --text-white: #ffffff;
+      --border: #dfe8dc;
+      --shadow: rgba(122, 158, 126, 0.15);
+      
+      --transition-speed: 0.3s;
+    }
+
+    /* Dark Mode Variables */
+    [data-theme="dark"] {
+      --bg: #121913;
+      --card: #1c261e;
+      
+      --matcha: #8eb392;
+      --sage: #5a7554;
+      --cream: #1e1b15;
+      --rose: #2e2320;
+      --gold: #b3885c;
+      
+      --text: #eef7ea;
+      --text-light: #a8c3a0;
+      --text-white: #ffffff;
+      --border: #2a382c;
+      --shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Reset & Base Styles */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    html { 
+      scroll-behavior: smooth; 
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Vazirmatn', sans-serif;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    @font-face {
+      font-family: 'IranNastaliq';
+      src: url('fonts/IranNastaliq.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { 
+      width: 10px; 
+    }
+    ::-webkit-scrollbar-track { 
+      background: var(--bg); 
+    }
+    ::-webkit-scrollbar-thumb { 
+      background: var(--matcha); 
+      border-radius: 5px; 
+    }
+
+    /* Sticky Controls Container (Theme Toggle & Music Player) */
+    .controls-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .control-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      padding: 8px 15px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 20px var(--shadow);
+      transition: all var(--transition-speed) ease;
+    }
+
+    [data-theme="dark"] .control-panel {
+      background: rgba(28, 38, 30, 0.85);
+    }
+
+    .music-btn, .theme-btn {
+      background: var(--matcha); 
+      color: var(--text-white); 
+      border: none;
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      cursor: pointer;
+      font-size: 1.2rem; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .music-btn:hover, .theme-btn:hover { 
+      background: var(--sage); 
+      transform: scale(1.05);
+    }
+    
+    .music-btn.playing { 
+      background: #ef4444; 
+    }
+
+    .control-label { 
+      font-size: 0.85rem; 
+      color: var(--text-light); 
+      font-weight: 500; 
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 20px;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 10px 30px var(--shadow);
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+      transition: all var(--transition-speed) ease;
+    }
+
+    [data-theme="dark"] nav {
+      background: rgba(28, 38, 30, 0.8);
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover { 
+      background-color: var(--matcha); 
+      color: var(--text-white); 
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      max-width: 1200px;
+      min-height: 40vh;
+      background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95)), url("gallery/color30.jpg");
+      background-size: cover;
+      background-position: center;
+      border-radius: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
+      box-shadow: 0 20px 60px var(--shadow);
+      margin-bottom: 40px;
+      border: 1px solid var(--border);
+      transition: all var(--transition-speed) ease;
+    }
+
+    [data-theme="dark"] header {
+      background: linear-gradient(rgba(18, 25, 19, 0.85), rgba(18, 25, 19, 0.95)), url("gallery/color30.jpg");
+    }
+
+    header h1 {
+      font-family: 'IranNastaliq', cursive;
+      font-size: 4.5rem;
+      margin-bottom: 15px;
+      color: var(--matcha);
+      line-height: 1.6;
+      font-weight: normal;
+    }
+
+    header p {
+      font-weight: 500; 
+      color: var(--text-light); 
+      font-size: 1.3rem;
+    }
+
+    /* Main Container */
+    main { 
+      max-width: 1200px; 
+      width: 100%; 
+    }
+
+    section { 
+      scroll-margin-top: 100px; 
+      margin-bottom: 60px;
+      background: var(--card);
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 10px 40px var(--shadow);
+      border: 1px solid var(--border);
+      transition: all var(--transition-speed) ease;
+    }
+
+    /* Scroll Reveal Animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Info Grid (About and Sidebar merged beautifully) */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    @media (max-width: 900px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .about-card {
+      background: var(--card);
+      border-radius: 30px;
+      box-shadow: 0 10px 40px var(--shadow);
+      padding: 35px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .about-card h2 {
+      font-family: 'IranNastaliq', cursive;
+      font-size: 3rem;
+      color: var(--matcha);
+      margin-bottom: 20px;
+      font-weight: normal;
+    }
+
+    .about-card p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-light);
+      text-align: justify;
+    }
+
+    /* Sidebar Refactored */
+    .sidebar {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 30px;
+      box-shadow: 0 10px 40px var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .sidebar h3 {
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 1.25rem;
+      color: var(--matcha);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+
+    .sidebar li:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar li:hover {
+      background: rgba(122, 158, 126, 0.08);
+      border-radius: 10px;
+    }
+
+    /* Details Panel */
+    .school-details {
+      background: linear-gradient(135deg, rgba(168,195,160,0.1), rgba(236,215,207,0.15));
+      border-radius: 25px;
+      padding: 25px;
+      margin-top: 25px;
+      border: 1px solid var(--border);
+    }
+
+    .school-details h4 {
+      margin-bottom: 15px;
+      color: var(--matcha);
+    }
+
+    .school-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    /* Teachers Section */
+    section.teachers h2, section.gallery h2 {
+      font-family: 'IranNastaliq', cursive;
+      font-size: 3.5rem;
+      margin-bottom: 40px;
+      color: var(--matcha);
+      text-align: center;
+      line-height: 1.8;
+      font-weight: normal;
+    }
+
+    .teachers-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+      gap: 25px; 
+      margin-top: 30px; 
+    }
+
+    .teacher-card {
+      background: linear-gradient(135deg, rgba(168,195,160,0.08), rgba(236,215,207,0.08));
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 8px 25px var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .teacher-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px var(--shadow);
+      border-color: var(--matcha);
+    }
+    
+    .teacher-card.principal { 
+      border-top: 4px solid var(--matcha); 
+      grid-column: 1 / -1; 
+      max-width: 450px; 
+      margin: 0 auto 20px auto; 
+    }
+
+    .teacher-icon { 
+      font-size: 2.8rem; 
+      margin-bottom: 15px; 
+      display: block; 
+    }
+
+    .teacher-name {
+      font-family: 'IranNastaliq', cursive;
+      font-size: 2.2rem;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.8;
+      font-weight: normal;
+    }
+
+    .teacher-role {
+      font-size: 0.9rem; 
+      color: var(--matcha); 
+      font-weight: 700;
+      background: rgba(122, 158, 126, 0.1); 
+      padding: 6px 14px; 
+      border-radius: 20px; 
+      display: inline-block;
+    }
+
+    /* Stats Dashboard */
+    .stats-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+      margin-bottom: 60px;
+      width: 100%;
+    }
+
+    .stat-box {
+      background: var(--card);
+      border-radius: 25px;
+      padding: 35px 20px;
+      text-align: center;
+      box-shadow: 0 10px 35px var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px var(--shadow);
+    }
+
+    .stat-box span {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .stat-box h3 {
+      font-size: 2.5rem;
+      color: var(--matcha);
+      margin-bottom: 5px;
+    }
+
+    .stat-box p {
+      font-size: 1rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Gallery Controls */
+    .gallery-controls {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 35px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 8px 30px var(--shadow);
+    }
+
+    .controls-upper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box { 
+      flex: 1; 
+      min-width: 280px; 
+      position: relative; 
+    }
+
+    .search-box input {
+      width: 100%; 
+      padding: 12px 20px 12px 45px; 
+      border-radius: 25px;
+      border: 1px solid var(--border); 
+      background: var(--bg);
+      color: var(--text); 
+      font-family: 'Vazirmatn', sans-serif; 
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus { 
+      outline: none; 
+      border-color: var(--matcha); 
+      box-shadow: 0 0 10px rgba(122, 158, 126, 0.2);
+    }
+
+    .search-box::before {
+      content: '🔍'; 
+      position: absolute; 
+      left: 18px; 
+      top: 50%; 
+      transform: translateY(-50%);
+      font-size: 1.1rem; 
+      opacity: 0.6;
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-btn {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-family: 'Vazirmatn', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover { 
+      border-color: var(--matcha); 
+      background: rgba(122, 158, 126, 0.1);
+    }
+
+    .filter-btn.active { 
+      background: var(--matcha); 
+      color: var(--text-white); 
+      border-color: var(--matcha); 
+      box-shadow: 0 4px 15px rgba(122, 158, 126, 0.3);
+    }
+
+    .counter {
+      width: 100%; 
+      text-align: center; 
+      font-size: 0.95rem; 
+      color: var(--text-light);
+      padding-top: 15px; 
+      border-top: 1px solid var(--border); 
+      margin-top: 5px;
+    }
+
+    .counter strong { 
+      color: var(--matcha); 
+      font-weight: 800; 
+    }
+
+    /* Gallery Grid */
+    .gallery-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+      gap: 30px; 
+    }
+
+    /* Art Card Design */
+    .art-card {
+      background: var(--card);
+      border-radius: 25px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .art-card.hidden { 
+      display: none; 
+    }
+
+    .art-card:hover { 
+      border-color: var(--matcha); 
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 45px var(--shadow);
+    }
+
+    .art-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: 0.8s;
+      z-index: 2;
+    }
+
+    .art-card:hover::before {
+      left: 150%;
+    }
+
+    .art-card img {
+      width: 100%; 
+      height: 240px; 
+      object-fit: cover; 
+      display: block;
+      background-color: #1e261f;
+      transition: transform 0.5s ease;
+    }
+
+    .art-card:hover img {
+      transform: scale(1.04);
+    }
+
+    .caption {
+      padding: 22px; 
+      display: flex; 
+      flex-direction: column;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+    }
+
+    .caption .title {
+      font-family: 'IranNastaliq', cursive;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: var(--text);
+      line-height: 1.6;
+      font-weight: normal;
+    }
+
+    .caption .style { 
+      font-size: 0.95rem; 
+      color: var(--matcha); 
+      margin-bottom: 12px; 
+      font-weight: 500; 
+      line-height: 1.5; 
+    }
+
+    .caption .lesson {
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      color: var(--text-light); 
+      margin-top: auto;
+      padding-top: 12px; 
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .caption .lesson::after {
+      content: "👁️ مشاهده اثر";
+      font-size: 0.75rem;
+      color: var(--matcha);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .art-card:hover .caption .lesson::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      background: rgba(18, 25, 19, 0.85);
+      backdrop-filter: blur(15px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active { 
+      display: flex; 
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      position: relative; 
+      max-width: 90vw; 
+      max-height: 90vh; 
+      background: var(--card);
+      padding: 25px; 
+      border-radius: 20px;
+      border: 2px solid var(--matcha);
+      display: flex; 
+      flex-direction: column; 
+      align-items: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .lightbox-img-wrapper {
+      width: 100%;
+      height: 55vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    #lightbox-img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      transition: none; /* Disable default transition to prevent drag lag */
+      cursor: zoom-in;
+      transform-origin: center center;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    #lightbox-img.zoomed {
+      cursor: zoom-out;
+    }
+
+    #lightbox-img.dragging {
+      cursor: grabbing;
+    }
+
+    .lightbox-caption {
+      font-family: 'IranNastaliq', cursive;
+      color: var(--text);
+      text-align: center;
+      font-size: 2.8rem;
+      margin-bottom: 5px;
+      line-height: 1.6;
+      font-weight: normal;
+    }
+
+    .lightbox-style { 
+      color: var(--matcha); 
+      font-weight: 600; 
+      font-size: 1.1rem; 
+      margin-bottom: 12px; 
+      text-align: center; 
+    }
+
+    .lightbox-lesson {
+      color: var(--text-light); 
+      font-weight: 700; 
+      font-size: 0.95rem;
+      background: rgba(122, 158, 126, 0.1); 
+      padding: 6px 18px; 
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .lightbox-close {
+      position: absolute; 
+      top: -15px; 
+      left: -15px; 
+      width: 45px; 
+      height: 45px;
+      background: #ef4444; 
+      color: white; 
+      font-size: 1.8rem; 
+      cursor: pointer;
+      font-weight: 300; 
+      user-select: none; 
+      transition: all 0.3s ease;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 50%;
+      border: 2px solid var(--card);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .lightbox-close:hover { 
+      background: #dc2626; 
+      transform: rotate(90deg); 
+    }
+
+    /* Lightbox Navigation Buttons */
+    .lightbox-nav {
+      position: absolute; 
+      top: 50%; 
+      transform: translateY(-50%);
+      background: var(--matcha); 
+      color: var(--text-white); 
+      border: none;
+      width: 50px; 
+      height: 50px; 
+      border-radius: 50%; 
+      cursor: pointer;
+      font-size: 1.5rem; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      z-index: 5;
+    }
+
+    .lightbox-nav:hover { 
+      background: var(--sage); 
+      transform: translateY(-50%) scale(1.1); 
+    }
+    
+    .lightbox-prev { right: -65px; }
+    .lightbox-next { left: -65px; }
+
+    .lightbox-actions {
+      display: flex; 
+      gap: 12px; 
+      margin-top: 20px; 
+      flex-wrap: wrap; 
+      justify-content: center;
+    }
+
+    .action-btn {
+      padding: 10px 20px; 
+      border-radius: 25px; 
+      border: 1px solid var(--border);
+      background: var(--bg); 
+      color: var(--text); 
+      cursor: pointer;
+      font-family: 'Vazirmatn', sans-serif; 
+      font-size: 0.9rem; 
+      font-weight: 600;
+      transition: all 0.3s ease; 
+      display: flex; 
+      align-items: center; 
+      gap: 8px;
+    }
+
+    .action-btn:hover { 
+      background: var(--matcha); 
+      color: var(--text-white); 
+      border-color: var(--matcha); 
+    }
+
+    /* Footer */
+    footer {
+      text-align: center; 
+      font-size: 0.95rem; 
+      color: var(--text-light); 
+      margin-top: 60px;
+      padding: 30px 20px; 
+      border-top: 1px solid var(--border); 
+      width: 100%; 
+      max-width: 1200px; 
+      font-weight: 500;
+    }
+
+    /* Print styling overrides (Used for PDF saving via native browser printing) */
+    @media print {
+      body { background: white; color: black; padding: 0; }
+      nav, .controls-container, .gallery-controls, .lightbox-close, .lightbox-nav, .lightbox-actions, footer { display: none !important; }
+      section { box-shadow: none !important; border: none !important; padding: 0 !important; margin-bottom: 40px !important; }
+      .art-card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+      .art-card img { height: 280px !important; }
+      .lightbox { position: relative !important; display: block !important; opacity: 1 !important; background: none !important; backdrop-filter: none !important; }
+      .lightbox-content { border: none !important; box-shadow: none !important; max-width: 100% !important; max-height: 100% !important; padding: 0 !important; }
+    }
+
+    /* Mobile Responsive adjustments */
+    @media (max-width: 768px) {
+      .controls-container {
+        position: static;
+        margin-bottom: 15px;
+        justify-content: center;
+        width: 100%;
+      }
+
+      nav { 
+        padding: 8px 12px; 
+        gap: 5px; 
+        width: 100%;
+        justify-content: center;
+      }
+      
+      nav a { 
+        font-size: 0.8rem; 
+        padding: 6px 12px; 
+      }
+      
+      header h1 {
+        font-size: 3.2rem;
+      }
+
+      header p {
+        font-size: 1.1rem;
+      }
+
+      section {
+        padding: 25px 15px;
+      }
+
+      .art-card img { 
+        height: 200px; 
+      }
+      
+      section.teachers h2, section.gallery h2 { 
+        font-size: 2.6rem; 
+      }
+
+      .lightbox-content { 
+        padding: 15px; 
+        width: 95vw; 
+      }
+
+      .lightbox-img-wrapper {
+        height: 40vh;
+      }
+
+      .lightbox-close { 
+        top: -10px; 
+        left: -10px; 
+        width: 40px; 
+        height: 40px; 
+        font-size: 1.5rem; 
+      }
+
+      .lightbox-prev { right: 5px; }
+      .lightbox-next { left: 5px; }
+      .lightbox-nav { 
+        width: 40px; 
+        height: 40px; 
+        font-size: 1.2rem; 
+      }
+
+      .gallery-controls { 
+        padding: 15px; 
+      }
+
+      .teacher-name { 
+        font-size: 1.8rem; 
+      }
+
+      .caption .title { 
+        font-size: 1.6rem; 
+      }
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--matcha);
+      color: var(--text-white);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 20px var(--shadow);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      background: var(--sage);
+      transform: translateY(-5px);
+    }
+
+    /* Music Waves Equalizer */
+    .music-waves {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      width: 20px;
+      height: 15px;
+    }
+
+    .music-waves span {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background-color: var(--matcha);
+      border-radius: 1px;
+      transition: height 0.2s ease;
+    }
+
+    /* Wave animation when playing */
+    .music-waves.playing span {
+      animation: wave-bounce 1.2s ease infinite alternate;
+    }
+
+    .music-waves.playing span:nth-child(1) { animation-delay: 0.1s; }
+    .music-waves.playing span:nth-child(2) { animation-delay: 0.4s; }
+    .music-waves.playing span:nth-child(3) { animation-delay: 0.2s; }
+    .music-waves.playing span:nth-child(4) { animation-delay: 0.5s; }
+
+    @keyframes wave-bounce {
+      0% { height: 3px; }
+      100% { height: 15px; }
+    }
+
+    /* Guestbook Styling */
+    .guestbook-container {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .guestbook-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comment-form {
+      background: var(--bg);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 15px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--matcha);
+      box-shadow: 0 0 10px rgba(122,158,126,0.15);
+    }
+
+    .form-group-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .emoji-selector {
+      display: flex;
+      gap: 8px;
+    }
+
+    .emoji-option {
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emoji-option:hover, .emoji-option.active {
+      transform: scale(1.2);
+      background: rgba(122,158,126,0.15);
+    }
+
+    .submit-btn {
+      background: var(--matcha);
+      color: var(--text-white);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-family: 'Vazirmatn', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(122,158,126,0.25);
+    }
+
+    .submit-btn:hover {
+      background: var(--sage);
+      transform: translateY(-2px);
+    }
+
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-left: 10px;
+    }
+
+    .comment-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px var(--shadow);
+      position: relative;
+      animation: slideIn 0.3s ease;
+      border-right: 4px solid var(--matcha);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .comment-name {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .comment-body {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-light);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Controls Container (Theme & Audio toggles) -->
+  <div class="controls-container">
+    <div class="control-panel">
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="تغییر تم رنگی">🌙</button>
+      <span class="control-label">تم صفحه</span>
+    </div>
+    <div class="control-panel">
+      <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="پخش / توقف موسیقی">🎵</button>
+      <div class="music-waves" id="musicWaves">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span class="control-label">موسیقی زمینه</span>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="gallery/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Sticky Navbar -->
+  <nav>
+    <a href="#about">درباره هنرستان</a>
+    <a href="#teachers">اساتید و کادر آموزشی</a>
+    <a href="#gallery">گالری آثار</a>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="reveal">
+    <h1>نمایشگاه هنری آفرینش</h1>
+    <p>مجموعه آثار هنرجویان خلاق هنرستان دخترانه کوثر — شهرستان سرچهان</p>
+  </header>
+
+  <main>
+    <!-- Modern Merged Section for Info and Sidebar -->
+    <div class="info-grid reveal" id="about">
+      <!-- School Intro Card -->
+      <div class="about-card">
+        <h2>معرفی هنرستان کوثر</h2>
+        <p>
+          هنرستان دخترانه کوثر واقع در شهرستان زیبای سرچهان، بستری پویا برای پرورش ذهن‌های خلاق و هنرمند است. در این مجموعه ۵۱ اثر نفیس هنری حاصل تلاش، خلاقیت و ذوق هنرجویان عزیزمان در رشته‌های متنوع گرافیک، عکاسی و کامپیوتر به نمایش گذاشته شده است. هر یک از این آثار، روایتی عمیق از تلاش‌های شبانه‌روزی هنرجویان مستعد تحت راهنمایی اساتید برجسته و مجرب است که هویت هنری نسل آینده کشور را شکل می‌دهد.
+        </p>
+        
+        <div class="school-details">
+          <h4>🏫 شناسنامه هنرستان</h4>
+          <div class="school-details-grid">
+            <div class="detail-item">🏫 <strong>نوع مرکز:</strong> هنرستان فنی‌وحرفه‌ای دخترانه کوثر</div>
+            <div class="detail-item">📍 <strong>موقعیت:</strong> استان فارس، شهرستان سرچهان</div>
+            <div class="detail-item">📞 <strong>تلفن تماس:</strong> <a href="tel:07144423556" style="color: var(--matcha); text-decoration: none; font-weight: bold; direction: ltr; display: inline-block;">07144423556</a></div>
+            <div class="detail-item">👩‍🎓 <strong>تعداد هنرجویان:</strong> ۵۶ نفر</div>
+            <div class="detail-item">🎓 <strong>رشته‌ها:</strong> گرافیک، عکاسی، شبکه و نرم‌افزار</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Redesigned Sidebar Widget -->
+      <aside class="sidebar">
+        <h3>🎨 رشته‌های فعال هنرستان</h3>
+        <ul>
+          <li>💻 نرم‌افزار</li>
+          <li>🎨 گرافیک</li>
+          <li>💻 گرافیک رایانه</li>
+          <li>📷 عکاسی</li>
+        </ul>
+      </aside>
+    </div>
+
+    <!-- Teachers Section -->
+    <section id="teachers" class="teachers reveal">
+      <h2>کادر آموزشی و مدیریت</h2>
+      <div class="teachers-grid">
+        <div class="teacher-card principal">
+          <span class="teacher-icon">👑</span>
+          <div class="teacher-name">خانم هاجر رحیمی</div>
+          <div class="teacher-role">مدیر محترم هنرستان کوثر</div>
+        </div>
+        <div class="teacher-card">
+          <span class="teacher-icon">🎨</span>
+          <div class="teacher-name">خانم عاطفه دیودار</div>
+          <div class="teacher-role">هنرآموز طراحی گرافیک</div>
+        </div>
+        <div class="teacher-card">
+          <span class="teacher-icon">🖌️</span>
+          <div class="teacher-name">خانم زهرا زارع</div>
+          <div class="teacher-role">هنرآموز طراحی رنگی</div>
+        </div>
+        <div class="teacher-card">
+          <span class="teacher-icon">💻</span>
+          <div class="teacher-name">آقای مهراد محمدجانی</div>
+          <div class="teacher-role">هنرآموز گرافیک رایانه</div>
+        </div>
+        <div class="teacher-card">
+          <span class="teacher-icon">👩‍💻</span>
+          <div class="teacher-name">خانم محبوبه محمدجانی</div>
+          <div class="teacher-role">هنرآموز کامپیوتر و طراح نمایشگاه</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Dashboard Block (Properly Aligned and Structured) -->
+    <div class="stats-dashboard reveal" id="statsSection">
+      <div class="stat-box">
+        <span>🎨</span>
+        <h3 class="stat-number" data-target="51">۰</h3>
+        <p>اثر هنری ثبت‌شده</p>
+      </div>
+      <div class="stat-box">
+        <span>👩‍🎓</span>
+        <h3 class="stat-number" data-target="20">۰</h3>
+        <p>هنرجوی مشارکت‌کننده</p>
+      </div>
+      <div class="stat-box">
+        <span>👩‍🏫</span>
+        <h3 class="stat-number" data-target="5">۰</h3>
+        <p>عضو کادر آموزشی</p>
+      </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery reveal">
+      <h2>گالری آثار هنری</h2>
+      
+      <!-- Filter & Search Controls -->
+      <div class="gallery-controls">
+        <div class="controls-upper">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="جستجوی نام هنرجو..." oninput="filterGallery()">
+          </div>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">همه آثار</button>
+            <button class="filter-btn" data-filter="طراحی رنگی" onclick="setFilter('طراحی رنگی', this)">طراحی رنگی</button>
+            <button class="filter-btn" data-filter="طراحی گرافیک" onclick="setFilter('طراحی گرافیک', this)">طراحی گرافیک</button>
+            <button class="filter-btn" data-filter="گرافیک رایانه" onclick="setFilter('گرافیک رایانه', this)">گرافیک رایانه</button>
+          </div>
+        </div>
+        <div class="counter">
+          در حال نمایش <strong id="visibleCount">0</strong> اثر از مجموع <strong id="totalCount">0</strong> اثر هنری
+        </div>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <!-- Interactive Guestbook Section -->
+    <section id="guestbook" class="gallery reveal" style="margin-top: 40px;">
+      <h2 style="font-family: 'IranNastaliq', cursive; font-size: 3.5rem; text-align: center; color: var(--matcha); margin-bottom: 15px; font-weight: normal;">دفتر یادبود بازدیدکنندگان</h2>
+      <p style="text-align: center; color: var(--text-light); margin-bottom: 30px; font-weight: 500;">
+        نظرات، تبریکات و پیام‌های دلگرم‌کننده خود را برای هنرجویان خلاق ما بنویسید. پیام‌های شما در این بخش نمایش داده خواهد شد!
+      </p>
+      
+      <div class="guestbook-container">
+        <!-- Form -->
+        <form id="commentForm" onsubmit="addComment(event)" class="comment-form">
+          <div class="form-group">
+            <input type="text" id="visitorName" placeholder="نام و نام خانوادگی شما..." required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <textarea id="visitorMessage" rows="4" placeholder="پیام دلگرم‌کننده شما برای هنرجویان..." required></textarea>
+          </div>
+          <div class="form-group-row">
+            <div class="emoji-selector">
+              <span class="emoji-option active" onclick="selectEmoji('🌸', this)">🌸</span>
+              <span class="emoji-option" onclick="selectEmoji('💖', this)">💖</span>
+              <span class="emoji-option" onclick="selectEmoji('🎨', this)">🎨</span>
+              <span class="emoji-option" onclick="selectEmoji('👏', this)">👏</span>
+              <span class="emoji-option" onclick="selectEmoji('✨', this)">✨</span>
+            </div>
+            <button type="submit" class="submit-btn">✍️ ثبت پیام یادبود</button>
+          </div>
+        </form>
+
+        <!-- Comments List -->
+        <div class="comments-list" id="commentsList">
+          <!-- Comments will load here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <div class="lightbox-close" onclick="closeLightbox(event)">&times;</div>
+      <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">&rsaquo;</button>
+      <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">&lsaquo;</button>
+      
+      <div class="lightbox-img-wrapper">
+        <img id="lightbox-img" src="" alt="اثر هنری" draggable="false" />
+      </div>
+      
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+      <div class="lightbox-style" id="lightbox-style"></div>
+      <div class="lightbox-lesson" id="lightbox-lesson"></div>
+      
+      <div class="lightbox-actions">
+        <button class="action-btn" onclick="shareArtwork()">📤 اشتراک‌گذاری اطلاعات</button>
+        <button class="action-btn" onclick="printPage()">🖨️ چاپ با کیفیت / ذخیره PDF</button>
+        <button class="action-btn" onclick="downloadPDF()">📋 خروجی لیست PDF متنی (لاتین)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p style="margin-bottom: 10px;">📞 تلفن تماس هنرستان: <a href="tel:07144423556" style="color: var(--matcha); text-decoration: none; font-weight: bold; direction: ltr; display: inline-block;">07144423556</a></p>
+    <p>طراحی، توسعه و بهینه‌سازی: محبوبه محمدجانی | هنرآموز کامپیوتر هنرستان کوثر</p>
+    <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.8;">پاییز و زمستان ۱۴۰۵</p>
+  </footer>
+
+  <script>
+    // Artworks list
+    const artworks = [
+      { src: 'gallery/color1.jpg', title: 'نازنین زهرا جشنی', style: 'کنتراست سرد و گرم (الهام از ون‌گوگ)', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color2.jpg', title: 'فاطمه میرشکاری', style: 'کنتراست وسعت', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color3.jpg', title: 'نازنین زهرا جشنی', style: 'اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color4.jpg', title: 'فاطمه‌زهرا غلامی', style: 'کنتراست تیرگی–روشنی', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color5.jpg', title: 'فاطمه‌زهرا غلامی', style: 'کنتراست اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color6.jpg', title: 'زهره قرائی', style: 'کنتراست اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color7.jpg', title: 'گیتا میرزایی', style: 'کنتراست تیرگی و روشنی و اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color8.jpg', title: 'فاطمه میرشکاری', style: 'کنتراست تیرگی و روشنی و اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color9.jpg', title: 'هانیا عابدی', style: 'کنتراست اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color10.jpg', title: 'فاطمه میرشکاری', style: 'کنتراست رنگ‌های سرد و گرم', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color11.jpg', title: 'فاطمه افزون‌منش', style: 'کنتراست وسعت و اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color12.jpg', title: 'پریسا احمدی', style: 'کنتراست اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color13.jpg', title: 'فاطمه غلامی', style: 'کنتراست رنگ‌های مکمل', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color14.jpg', title: 'گیتا میرزایی', style: 'کنتراست اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color15.jpg', title: 'فاطمه افزون منش', style: 'کنتراست رنگ‌های سرد و گرم (الهام از فرش)', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color16.jpg', title: 'فاطمه زهرا غلامی', style: 'کنتراست رنگ های سرد و گرم (الهام از شب پرستاره)', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color17.jpg', title: 'گیتا میرزایی', style: 'کنتراست تیرگی–روشنی', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color18.jpg', title: 'زینب شهابی', style: 'کنتراست تیرگی و روشنی و اشباع رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color19.jpg', title: 'فاطمه افزون منش', style: 'کنتراست تیرگی روشنی', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color20.jpg', title: 'هانیا عابدی', style: 'کنتراست ته رنگ', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color21.jpg', title: 'فاطمه میرشکاری', style: 'کنتراست رنگ‌های سردو گرم', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color22.jpg', title: 'گیتا میرزایی', style: 'کنتراست رنگ‌های مکمل', lesson: 'طراحی رنگی' },
+      { src: 'gallery/color23.jpg', title: 'ستایش سلیمانی پور', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color24.jpg', title: 'نرگس اسدی', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color25.jpg', title: 'عاطفه اشرف', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color26.jpg', title: 'مبینا حسین خانی', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color27.jpg', title: 'ستایش سلیمانی پور', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color28.jpg', title: 'ستایش سلیمانی پور', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color29.jpg', title: 'فاطمه شعبانی', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color30.jpg', title: 'فاطمه ملک حسینی ف', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color31.jpg', title: 'مبینا عابدی', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color32.jpg', title: 'فاطمه ملک حسینی ف', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color33.jpg', title: 'فاطمه ملک حسینی ف', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color34.jpg', title: 'مبینا ملک حسینی', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color35.jpg', title: 'سکینه مهدوی', style: 'گرادینت', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color36.jpg', title: 'نرگس اسدی', style: 'طراحی بسته بندی', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color37.jpg', title: 'سکینه مهدوی', style: 'طراحی کاغذ کادو', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color38.jpg', title: 'فاطمه میرزایی', style: 'طراحی کاغذ کادو', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color39.jpg', title: 'نسترن هادی پور', style: 'طراحی کاغذ کادو', lesson: 'طراحی گرافیک' },
+      { src: 'gallery/color40.jpg', title: 'پریسا احمدی', style: 'شطرنجی', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color41.jpg', title: 'فاطمه میرشکاری', style: 'کاغذکادو', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color42.jpg', title: 'فاطمه زهرا غلامی', style: 'تلفیق ذهن', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color43.jpg', title: 'فاطمه زهرا غلامی', style: 'انیمیشن پانی', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color44.jpg', title: 'فاطمه زهرا غلامی', style: 'لیبل', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color45.jpg', title: 'فاطمه زهرا غلامی', style: 'شطرنجی (کاشی‌کاری)', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color46.jpg', title: 'نازنین زهرا جشنی', style: 'شطرنجی', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color47.jpg', title: 'نازنین زهرا جشنی', style: 'شطرنجی', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color48.jpg', title: 'زینب شهابی', style: 'شب یلدا', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color49.jpg', title: 'نازنین زهرا جشنی', style: 'شطرنجی', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color50.jpg', title: 'نازنین زهرا جشنی', style: 'شب یلدا', lesson: 'گرافیک رایانه' },
+      { src: 'gallery/color51.jpg', title: 'پریسا احمدی', style: 'ساعت', lesson: 'گرافیک رایانه' }
+    ];
+
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentLightboxIndex = 0;
+    let filteredArtworks = [...artworks];
+
+    // Zoom and Drag state variables (Fixing reference errors)
+    let scale = 1;
+    let posX = 0;
+    let posY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    // Shuffle for non-biased art displaying
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    const galleryGrid = document.getElementById('gallery-grid');
+    const shuffledArtworks = shuffleArray(artworks);
+
+    document.getElementById('totalCount').textContent = artworks.length;
+
+    // Render Grid Cards
+    shuffledArtworks.forEach(({src, title, style, lesson}) => {
+      const card = document.createElement('div');
+      card.className = 'art-card';
+      card.setAttribute('tabindex', 0);
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `${title} - ${style} - ${lesson}`);
+      card.dataset.title = title;
+      card.dataset.lesson = lesson;
+      card.onclick = () => {
+        const idx = filteredArtworks.findIndex(a => a.src === src);
+        openLightbox(idx);
+      };
+      card.onkeypress = (e) => { 
+        if (e.key === 'Enter' || e.key === ' ') {
+          const idx = filteredArtworks.findIndex(a => a.src === src);
+          openLightbox(idx);
+        }
+      };
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `اثر هنری از ${title}`;
+      img.loading = 'lazy';
+
+      const caption = document.createElement('div');
+      caption.className = 'caption';
+      
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'title';
+      titleDiv.textContent = title;
+
+      const styleDiv = document.createElement('div');
+      styleDiv.className = 'style';
+      styleDiv.textContent = style;
+
+      const lessonDiv = document.createElement('div');
+      lessonDiv.className = 'lesson';
+      lessonDiv.textContent = lesson;
+
+      caption.appendChild(titleDiv);
+      caption.appendChild(styleDiv);
+      caption.appendChild(lessonDiv);
+
+      card.appendChild(img);
+      card.appendChild(caption);
+      galleryGrid.appendChild(card);
+    });
+
+    // Filtering system
+    function filterGallery() {
+      currentSearch = document.getElementById('searchInput').value.trim().toLowerCase();
+      const cards = document.querySelectorAll('.art-card');
+      let visibleCount = 0;
+
+      filteredArtworks = [];
+
+      cards.forEach(card => {
+        const title = card.dataset.title.toLowerCase();
+        const lesson = card.dataset.lesson;
+        
+        const matchesFilter = currentFilter === 'all' || lesson === currentFilter;
+        const matchesSearch = currentSearch === '' || title.includes(currentSearch);
+
+        if (matchesFilter && matchesSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+          const artwork = artworks.find(a => a.title === card.dataset.title && a.lesson === lesson);
+          if (artwork) filteredArtworks.push(artwork);
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('visibleCount').textContent = visibleCount;
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterGallery();
+    }
+
+    // Lightbox Functionalities
+    const lightboxImg = document.getElementById("lightbox-img");
+
+    // To distinguish between drag and click
+    let mousedownX = 0;
+    let mousedownY = 0;
+
+    function updateTransform() {
+      lightboxImg.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+    }
+
+    function openLightbox(index) {
+      resetZoom();
+      if (index < 0 || index >= filteredArtworks.length) return;
+      currentLightboxIndex = index;
+      const artwork = filteredArtworks[index];
+      
+      lightboxImg.src = artwork.src;
+      lightboxImg.alt = `اثر هنری از ${artwork.title}`;
+      document.getElementById('lightbox-caption').textContent = artwork.title;
+      document.getElementById('lightbox-style').textContent = artwork.style;
+      document.getElementById('lightbox-lesson').textContent = artwork.lesson;
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(event) {
+      if (event.target.id === 'lightbox' || event.target.classList.contains('lightbox-close')) {
+        resetZoom();
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => { lightboxImg.src = ''; }, 300);
+      }
+    }
+
+    function navigateLightbox(direction) {
+      let newIndex = currentLightboxIndex + direction;
+      if (newIndex < 0) newIndex = filteredArtworks.length - 1;
+      if (newIndex >= filteredArtworks.length) newIndex = 0;
+      openLightbox(newIndex);
+    }
+
+    // Toggle zoom on real clicks
+    lightboxImg.addEventListener("click", function(e) {
+      // Calculate how far the mouse moved between mousedown and click
+      const deltaX = e.clientX - mousedownX;
+      const deltaY = e.clientY - mousedownY;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+      // If the mouse moved more than 5 pixels, it was a drag, not a click!
+      if (distance > 5) {
+        return;
+      }
+
+      if (scale > 1) {
+        resetZoom();
+      } else {
+        scale = 2.5; // High-quality zoom level
+        posX = 0;
+        posY = 0;
+        lightboxImg.style.transition = 'transform 0.25s ease'; // Buttery-smooth zoom in
+        updateTransform();
+        this.classList.add("zoomed");
+        setTimeout(() => {
+          lightboxImg.style.transition = 'none'; // Disable transition for lag-free dragging
+        }, 250);
+      }
+    });
+
+    // Mouse Wheel Zoom (keeps position but adjusts scale)
+    lightboxImg.addEventListener("wheel", function(e) {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        scale += 0.25;
+      } else {
+        scale -= 0.25;
+      }
+      scale = Math.max(1, Math.min(scale, 5));
+      
+      if (scale === 1) {
+        posX = 0;
+        posY = 0;
+      }
+      updateTransform();
+    }, { passive: false });
+
+    // Drag Functionalities (Mouse)
+    lightboxImg.addEventListener("mousedown", function(e) {
+      mousedownX = e.clientX;
+      mousedownY = e.clientY;
+      
+      if (scale > 1) {
+        isDragging = true;
+        startX = e.clientX - posX;
+        startY = e.clientY - posY;
+        lightboxImg.classList.add("dragging");
+      }
+    });
+
+    document.addEventListener("mousemove", function(e) {
+      if (!isDragging) return;
+      posX = e.clientX - startX;
+      posY = e.clientY - startY;
+      updateTransform();
+    });
+
+    document.addEventListener("mouseup", function() {
+      isDragging = false;
+      lightboxImg.classList.remove("dragging");
+    });
+
+    // Touch Support for Mobile Dragging
+    lightboxImg.addEventListener("touchstart", function(e) {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        mousedownX = touch.clientX;
+        mousedownY = touch.clientY;
+        
+        if (scale > 1) {
+          isDragging = true;
+          startX = touch.clientX - posX;
+          startY = touch.clientY - posY;
+        }
+      }
+    }, { passive: true });
+
+    document.addEventListener("touchmove", function(e) {
+      if (!isDragging || e.touches.length !== 1) return;
+      const touch = e.touches[0];
+      posX = touch.clientX - startX;
+      posY = touch.clientY - startY;
+      updateTransform();
+    }, { passive: true });
+
+    document.addEventListener("touchend", function() {
+      isDragging = false;
+    }, { passive: true });
+
+    function resetZoom() {
+      scale = 1;
+      posX = 0;
+      posY = 0;
+      lightboxImg.style.transition = 'transform 0.25s ease'; // Buttery-smooth zoom out
+      updateTransform();
+      lightboxImg.classList.remove("zoomed");
+      setTimeout(() => {
+        lightboxImg.style.transition = 'none'; // Clear inline style
+      }, 250);
+    }
+
+    // Share artwork metadata
+    function shareArtwork() {
+      const artwork = filteredArtworks[currentLightboxIndex];
+      const text = `اثر هنری "${artwork.title}" - ${artwork.style} - ${artwork.lesson} | نمایشگاه هنری آفرینش`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'نمایشگاه هنری آفرینش',
+          text: text,
+          url: window.location.href
+        }).catch(err => console.log('Sharing failed', err));
+      } else {
+        navigator.clipboard.writeText(text + '\n' + window.location.href).then(() => {
+          alert('اطلاعات اثر هنری با موفقیت در کلیپ‌بورد کپی شد!');
+        });
+      }
+    }
+
+    // Professional Printing (Native Browser Print is best for Persian PDF generation with styling/images)
+    function printPage() {
+      window.print();
+    }
+
+    // Textual list PDF generator
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFont('helvetica');
+      doc.setFontSize(20);
+      doc.text('Namayeshgah Honari Afarinish', 105, 20, { align: 'center' });
+      
+      doc.setFontSize(12);
+      doc.text('Kosar Girls Art School - Sarchehan County', 105, 30, { align: 'center' });
+      doc.text('Artworks Index (Textual List)', 105, 38, { align: 'center' });
+      
+      let y = 55;
+      filteredArtworks.forEach((artwork, index) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.setFontSize(10);
+        // Clean Persian characters for basic pdf exports or output transliterations
+        const cleanTitle = convertPersianToLatin(artwork.title);
+        const cleanStyle = convertPersianToLatin(artwork.style);
+        const cleanLesson = convertPersianToLatin(artwork.lesson);
+        
+        doc.text(`${index + 1}. Student: ${cleanTitle}`, 20, y);
+        doc.text(`   Category/Topic: ${cleanStyle}`, 20, y + 5);
+        doc.text(`   Course: ${cleanLesson}`, 20, y + 10);
+        y += 22;
+      });
+      
+      doc.save('namayeshgah-afarinish-list.pdf');
+    }
+
+    // Transliteration helper for basic Latin PDF generation (Since standard jsPDF lacks Persian font mapping without customized base64 files)
+    function convertPersianToLatin(text) {
+      const map = {
+        'نازنین زهرا جشنی': 'Nazanin Zahra Jashni',
+        'فاطمه میرشکاری': 'Fatemeh Mirshekari',
+        'فاطمه‌زهرا غلامی': 'Fatemeh Zahra Gholami',
+        'فاطمه زهرا غلامی': 'Fatemeh Zahra Gholami',
+        'زهره قرائی': 'Zohreh Gharaei',
+        'گیتا میرزایی': 'Gita Mirzaei',
+        'هانیا عابدی': 'Hania Abedi',
+        'فاطمه افزون‌منش': 'Fatemeh Afzoonmanesh',
+        'فاطمه افزون منش': 'Fatemeh Afzoonmanesh',
+        'پریسا احمدی': 'Parisa Ahmadi',
+        'فاطمه غلامی': 'Fatemeh Gholami',
+        'زینب شهابی': 'Zeinab Shahabi',
+        'ستایش سلیمانی پور': 'Setayesh Soleimanipour',
+        'نرگس اسدی': 'Narges Asadi',
+        'عاطفه اشرف': 'Atefeh Ashraf',
+        'مبینا حسین خانی': 'Mobina Hosseinkhani',
+        'فاطمه شعبانی': 'Fatemeh Shabani',
+        'فاطمه ملک حسینی ف': 'Fatemeh Malekhosseini',
+        'مبینا عابدی': 'Mobina Abedi',
+        'مبینا ملک حسینی': 'Mobina Malekhosseini',
+        'سکینه مهدوی': 'Sakineh Mahdavi',
+        'فاطمه میرزایی': 'Fatemeh Mirzaei',
+        'نسترن هادی پور': 'Nastaran Hadipour',
+        'طراحی رنگی': 'Color Painting',
+        'طراحی گرافیک': 'Graphic Design',
+        'گرافیک رایانه': 'Computer Graphics',
+        'کنتراست': 'Contrast',
+        'کنتراست سرد و گرم (الهام از ون‌گوگ)': 'Warm & Cold Contrast (Inspired by Van Gogh)',
+        'کنتراست وسعت': 'Contrast of Extension',
+        'اشباع رنگ': 'Color Saturation',
+        'کنتراست تیرگی–روشنی': 'Light-Dark Contrast',
+        'کنتراست اشباع رنگ': 'Saturation Contrast',
+        'کنتراست تیرگی و روشنی و اشباع رنگ': 'Light-Dark & Saturation Contrast',
+        'کنتراست رنگ‌های سرد و گرم': 'Warm & Cold Colors Contrast',
+        'کنتراست وسعت و اشباع رنگ': 'Contrast of Extension & Saturation',
+        'کنتراست رنگ‌های مکمل': 'Complementary Colors Contrast',
+        'کنتراست رنگ‌های سرد و گرم (الهام از فرش)': 'Warm & Cold Contrast (Inspired by Persian Carpet)',
+        'کنتراست رنگ های سرد و گرم (الهام از شب پرستاره)': 'Warm & Cold Contrast (Inspired by Starry Night)',
+        'گرادینت': 'Gradient',
+        'طراحی بسته بندی': 'Package Design',
+        'طراحی کاغذ کادو': 'Wrapping Paper Design',
+        'شطرنجی': 'Grid Pattern',
+        'شطرنجی (کاشی‌کاری)': 'Grid Pattern (Tiling)',
+        'کاغذکادو': 'Wrapping Paper',
+        'تلفیق ذهن': 'Mind Fusion',
+        'انیمیشن پانی': 'Pani Animation',
+        'لیبل': 'Label Design',
+        'شب یلدا': 'Yalda Night Theme',
+        'ساعت': 'Clock Design'
+      };
+      return map[text] || text;
+    }
+
+    // Audio Background Player Settings
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    const musicWaves = document.getElementById('musicWaves');
+    bgMusic.volume = 0.25;
+    let isPlaying = false;
+
+    function toggleMusic() {
+      if (isPlaying) {
+        bgMusic.pause();
+        musicBtn.textContent = '🎵';
+        musicBtn.classList.remove('playing');
+        if (musicWaves) musicWaves.classList.remove('playing');
+      } else {
+        bgMusic.play().catch(e => console.log('Autoplay restriction resolved:', e));
+        musicBtn.textContent = '⏸️';
+        musicBtn.classList.add('playing');
+        if (musicWaves) musicWaves.classList.add('playing');
+      }
+      isPlaying = !isPlaying;
+    }
+
+    // Guestbook Comments Functionality
+    let selectedEmoji = '🌸';
+    const commentsList = document.getElementById('commentsList');
+
+    function selectEmoji(emoji, el) {
+      selectedEmoji = emoji;
+      document.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function loadComments() {
+      if (!commentsList) return;
+      const saved = localStorage.getItem('guestbook_comments');
+      const defaultComments = [
+        { name: 'خانم زهرا زارع (هنرآموز)', message: 'بسیار از دیدن آثار خلاقانه دختران عزیزم در رشته طراحی رنگی شگفت‌زده شدم. تلاش‌های شما بی‌نظیر است. پایدار باشید!', emoji: '💖', date: '۱ ساعت پیش' },
+        { name: 'خانم عاطفه دیودار (هنرآموز)', message: 'تبریک صمیمانه به تمام هنرجویان پرتلاش هنرستان کوثر. نمایشگاه آفرینش مظهر استعداد، ذوق و شکوفایی شماست. به تک تک شما افتخار می‌کنم. ✨', emoji: '👏', date: '۳ ساعت پیش' }
+      ];
+      
+      const comments = saved ? JSON.parse(saved) : defaultComments;
+
+      commentsList.innerHTML = '';
+      // Show newest comments first
+      [...comments].reverse().forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'comment-card';
+        
+        card.innerHTML = `
+          <div class="comment-header">
+            <span class="comment-name">${c.name} ${c.emoji}</span>
+            <span>${c.date}</span>
+          </div>
+          <p class="comment-body">${c.message}</p>
+        `;
+        commentsList.appendChild(card);
+      });
+    }
+
+    function addComment(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('visitorName');
+      const msgInput = document.getElementById('visitorMessage');
+
+      if (!nameInput.value.trim() || !msgInput.value.trim()) return;
+
+      const newComment = {
+        name: nameInput.value.trim(),
+        message: msgInput.value.trim(),
+        emoji: selectedEmoji,
+        date: 'هم‌اکنون'
+      };
+
+      const saved = localStorage.getItem('guestbook_comments');
+      const defaultComments = [
+        { name: 'خانم زهرا زارع (هنرآموز)', message: 'بسیار از دیدن آثار خلاقانه دختران عزیزم در رشته طراحی رنگی شگفت‌زده شدم. تلاش‌های شما بی‌نظیر است. پایدار باشید!', emoji: '💖', date: '۱ ساعت پیش' },
+        { name: 'خانم عاطفه دیودار (هنرآموز)', message: 'تبریک صمیمانه به تمام هنرجویان پرتلاش هنرستان کوثر. نمایشگاه آفرینش مظهر استعداد، ذوق و شکوفایی شماست. به تک تک شما افتخار می‌کنم. ✨', emoji: '👏', date: '۳ ساعت پیش' }
+      ];
+      
+      const comments = saved ? JSON.parse(saved) : defaultComments;
+      comments.push(newComment);
+      localStorage.setItem('guestbook_comments', JSON.stringify(comments));
+
+      nameInput.value = '';
+      msgInput.value = '';
+      
+      loadComments();
+    }
+
+    // Theme Switcher Implementation
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      const themeBtn = document.getElementById('themeBtn');
+      themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    // Keyboard navigation inside lightbox
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('lightbox').classList.contains('active')) {
+        if (e.key === 'Escape') closeLightbox({ target: document.getElementById('lightbox') });
+        if (e.key === 'ArrowLeft') navigateLightbox(1);
+        if (e.key === 'ArrowRight') navigateLightbox(-1);
+      }
+    });
+
+    // Scroll Reveal implementation (Sleek fade-ins)
+    function revealOnScroll() {
+      const reveals = document.querySelectorAll('.reveal');
+      const windowHeight = window.innerHeight;
+      reveals.forEach(el => {
+        const elementTop = el.getBoundingClientRect().top;
+        const elementVisible = 120;
+        if (elementTop < windowHeight - elementVisible) {
+          el.classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', revealOnScroll);
+
+    // Back to top function
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Show/hide back to top button on scroll
+    window.addEventListener('scroll', () => {
+      const backBtn = document.getElementById('backToTop');
+      if (window.scrollY > 300) {
+        backBtn.classList.add('visible');
+      } else {
+        backBtn.classList.remove('visible');
+      }
+    });
+
+    // Animated Counters for Stats Block
+    let statsAnimated = false;
+    function animateCounters() {
+      if (statsAnimated) return;
+      const statsSection = document.getElementById('statsSection');
+      if (!statsSection) return;
+      
+      const rect = statsSection.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+      
+      if (isVisible) {
+        statsAnimated = true;
+        const counters = document.querySelectorAll('.stat-number');
+        counters.forEach(counter => {
+          const target = parseInt(counter.getAttribute('data-target'));
+          let count = 0;
+          // Set duration for count-up animation
+          const duration = 1200; // 1.2 seconds
+          const stepTime = Math.max(Math.floor(duration / target), 15);
+          
+          const updateCount = () => {
+            if (count < target) {
+              count++;
+              counter.textContent = count.toLocaleString('fa-IR');
+              setTimeout(updateCount, stepTime);
+            } else {
+              counter.textContent = target.toLocaleString('fa-IR');
+            }
+          };
+          updateCount();
+        });
+      }
+    }
+
+    window.addEventListener('scroll', animateCounters);
+
+    // Bootstrap app
+    window.addEventListener('DOMContentLoaded', () => {
+      filterGallery();
+      revealOnScroll();
+      animateCounters(); // Run once in case stats are already in viewport
+      loadComments(); // Load guestbook comments
+    });
+  </script>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()" title="برگشت به بالا">⬆️</button>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a07d7871baa4dbd7',t:'MTc4MDgxMjM4Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
